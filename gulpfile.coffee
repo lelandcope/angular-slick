@@ -47,4 +47,11 @@ gulp.task 'minify', ->
     .pipe($.size({ title: 'JS:' }))
     .pipe($.rename({suffix: '.min'}))
     .pipe(gulp.dest("#{DIST_LOCATION}/"))
+
+
+###
+@task: build
+###
+
+gulp.task 'build', ['lint', 'coffee', 'minify']
     

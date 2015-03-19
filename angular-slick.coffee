@@ -4,7 +4,7 @@ angular.module('angular-slick', [])
 
         ($timeout)->
             restrict: 'AEC'
-            $scope:
+            scope:
                 initOnload: "@"
                 data: "="
                 currentIndex: "="
@@ -71,8 +71,7 @@ angular.module('angular-slick', [])
 
                 initializeSlick = ->
                     $timeout ->
-                        slider       = $ elem
-                        currentIndex = $scope.currentIndex if $scope.currentIndex?
+                        slider = $ elem
 
                         slider.slick
                             accessibility: $scope.accessibility isnt 'false'
@@ -95,7 +94,7 @@ angular.module('angular-slick', [])
                             easing: $scope.easing or 'linear'
                             edgeFriction: Number($scope.edgeFriction or 0.15)
                             infinite: $scope.infinite isnt 'false'
-                            initialSlide: $scope.initialSlide or 0
+                            initialSlide:$scope.initialSlide or 0
                             lazyLoad: $scope.lazyLoad or 'ondemand'
                             mobileFirst: $scope.mobileFirst is 'true'
                             pauseOnHover: $scope.pauseOnHover isnt 'false'
@@ -103,22 +102,45 @@ angular.module('angular-slick', [])
                             respondTo: $scope.respondTo or 'window'
                             responsive: $scope.responsive or undefined
                             slide: $scope.slide or 'div'
-                            slidesToShow: Number($scope.slidesToShow or 1)
-                            slidesToScroll: Number($scope.slidesToScroll or 1)
-                            speed: Number($scope.speed or 300)
-                            swipe: $scope.swipe is 'true'
-                            swipeToSlide: $scope.swipeToSlide isnt 'false'
-                            touchMove: $scope.touchMove is 'true'
-                            touchThreshold: Number($scope.touchThreshold or 5)
-                            useCSS: $scope.useCSS is 'true'
-                            variableWidth: $scope.variableWidth isnt 'false'
-                            vertical: $scope.vertical isnt 'false'
-                            rtl: $scope.rtl isnt 'false'
+                            slidesToShow: if $scope.slidesToShow? then parseInt($scope.slidesToShow, 10) else 1
+                            slidesToScroll: if $scope.slidesToScroll? then parseInt($scope.slidesToScroll, 10) else 1
+                            speed: if $scope.speed? then parseInt($scope.speed, 10) else 300
+                            swipe: $scope.swipe isnt 'false'
+                            swipeToSlide: $scope.swipeToSlide is 'true'
+                            touchMove: $scope.touchMove isnt 'false'
+                            touchThreshold: if $scope.touchThreshold then parseInt($scope.touchThreshold, 10) else 5
+                            useCSS: $scope.useCSS isnt 'false'
+                            variableWidth: $scope.variableWidth is 'true'
+                            vertical: $scope.vertical is 'true'
+                            rtl: $scope.rtl is 'true'
 
-                        slider.on 'afterChange', (e, slick, currentSlide)->
-                            #$scope.currentIndex =
-                            console.log currentSlide
+                        # Events
+                        slider.on 'afterChange', (e, slick, index)->
+                            $scope.onAfterChange(e, slick, index) if attrs.onAfterChange
 
+                            if $scope.currentIndex
+                                $scope.$apply ->
+                                    $scope.currentIndex = index
+
+                        slider.on 'beforeChange', (e, slick, currentIndex, nextIndex)->
+                            $scope.onBeforeChange(e, slick, currentIndex, nextIndex) if attrs.onBeforeChange
+
+                        slider.on 'edge', (e, slick, direction)->
+                            $scope.onEdge(e, slick, direction) if attrs.onEdge
+
+                        slider.on 'init', (e, slick)->
+                            $scope.onInit(e, slick) if attrs.onInit
+
+                        slider.on 'reInit', (e, slick)->
+                            $scope.onReinit(e, slick) if attrs.onReinit
+
+                        slider.on 'setPosition', (e, slick)->
+                            $scope.onSetPosition(e, slick) if attrs.onSetPosition
+
+                        slider.on 'swipe', (e, slick, direction)->
+                            $scope.onSwipe(e, slick, direction) if attrs.onSwipe
+
+                        # Watch Functions
                         $scope.$watch 'currentIndex', (newValue, oldValue)->
                             if newValue? and newValue isnt oldValue
                                 slider.slickGoTo newValue
@@ -135,6 +157,7 @@ angular.module('angular-slick', [])
                 else
                     initializeSlick()
 
+                # On Destroy
                 $scope.$on '$destroy', ->
                     destroySlick()
     ]
