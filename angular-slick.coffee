@@ -116,34 +116,60 @@ angular.module('angular-slick', [])
 
                         # Events
                         slider.on 'afterChange', (e, slick, index)->
-                            $scope.onAfterChange(e, slick, index) if attrs.onAfterChange
+                            $scope.onAfterChange(
+                                event: e
+                                slick: slick
+                                index: index
+                            ) if attrs.onAfterChange
 
-                            if $scope.currentIndex
+                            if $scope.currentIndex?
                                 $scope.$apply ->
                                     $scope.currentIndex = index
 
                         slider.on 'beforeChange', (e, slick, currentIndex, nextIndex)->
-                            $scope.onBeforeChange(e, slick, currentIndex, nextIndex) if attrs.onBeforeChange
+                            $scope.onBeforeChange(
+                                event: e
+                                slick: slick
+                                currentIndex: currentIndex
+                                nextIndex: nextIndex
+                            ) if attrs.onBeforeChange
 
                         slider.on 'edge', (e, slick, direction)->
-                            $scope.onEdge(e, slick, direction) if attrs.onEdge
+                            $scope.onEdge(
+                                event: e
+                                slick: slick
+                                direction: direction
+                            ) if attrs.onEdge
 
                         slider.on 'init', (e, slick)->
-                            $scope.onInit(e, slick) if attrs.onInit
+                            $scope.onInit(
+                                event: e
+                                slick: slick
+                            ) if attrs.onInit
 
                         slider.on 'reInit', (e, slick)->
-                            $scope.onReinit(e, slick) if attrs.onReinit
+                            $scope.onReinit(
+                                event: e
+                                slick: slick
+                            ) if attrs.onReinit
 
                         slider.on 'setPosition', (e, slick)->
-                            $scope.onSetPosition(e, slick) if attrs.onSetPosition
+                            $scope.onSetPosition(
+                                event: e
+                                slick: slick
+                            ) if attrs.onSetPosition
 
                         slider.on 'swipe', (e, slick, direction)->
-                            $scope.onSwipe(e, slick, direction) if attrs.onSwipe
+                            $scope.onSwipe(
+                                event: e
+                                slick: slick
+                                direction: direction
+                            ) if attrs.onSwipe
 
                         # Watch Functions
                         $scope.$watch 'currentIndex', (newValue, oldValue)->
                             if newValue? and newValue isnt oldValue
-                                slider.slickGoTo newValue
+                                slider.slick 'slickGoTo', newValue
 
 
                 if $scope.initOnload
