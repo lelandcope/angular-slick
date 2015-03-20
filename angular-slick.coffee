@@ -64,7 +64,7 @@ angular.module('angular-slick', [])
                     $timeout ->
                         slider = $(elem)
 
-                        slider.unslick()
+                        slider.slick('unslick')
                         slider.find('.slick-list').remove()
                         
                         return slider
@@ -72,6 +72,11 @@ angular.module('angular-slick', [])
                 initializeSlick = ->
                     $timeout ->
                         slider = $ elem
+                        customPaging = undefined
+
+                        if attrs.customPaging
+                            customPaging = (slick, index)->
+                                $scope.customPaging { slick: slick, index: index }
 
                         slider.slick
                             accessibility: $scope.accessibility isnt 'false'
@@ -86,7 +91,7 @@ angular.module('angular-slick', [])
                             centerMode: $scope.centerMode is 'true'
                             centerPadding: $scope.centerPadding or '50px'
                             cssEase: $scope.cssEase or 'ease'
-                            customPaging: if attrs.customPaging then $scope.customPaging else undefined
+                            customPaging: customPaging
                             dots: $scope.dots is 'true'
                             draggable: $scope.draggable isnt 'false'
                             fade: $scope.fade is 'true'
