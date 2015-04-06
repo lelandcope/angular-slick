@@ -30,7 +30,7 @@ angular.module('angular-slick', [])
                 easing: "@"
                 edgeFriction: "@"
                 infinite: "@"
-                initialSlide: "@"
+                initialSlide: "="
                 lazyLoad: "@"
                 mobileFirst: "@"
                 pauseOnHover: "@"
@@ -60,8 +60,12 @@ angular.module('angular-slick', [])
                 onSwipe: '&'
 
             link: ($scope, elem, attrs)->
+                currentIndexWatch = ->
+
                 destroySlick = ->
                     $timeout ->
+                        currentIndexWatch()
+
                         slider = $(elem)
 
                         slider.slick('unslick')
@@ -86,8 +90,8 @@ angular.module('angular-slick', [])
                             arrows: $scope.arrows isnt 'false'
                             asNavFor: if $scope.asNavFor then $scope.asNavFor else undefined
                             appendArrows: if $scope.appendArrows then $($scope.appendArrows) else $(elem)
-                            prevArrow: if $scope.prevArrow then $($scope.prevArrow) else undefined
-                            nextArrow: if $scope.nextArrow then $($scope.nextArrow) else undefined
+                            prevArrow: if $scope.prevArrow then $scope.prevArrow else undefined
+                            nextArrow: if $scope.nextArrow then $scope.nextArrow else undefined
                             centerMode: $scope.centerMode is 'true'
                             centerPadding: $scope.centerPadding or '50px'
                             cssEase: $scope.cssEase or 'ease'
@@ -172,8 +176,8 @@ angular.module('angular-slick', [])
                             ) if attrs.onSwipe
 
                         # Watch Functions
-                        $scope.$watch 'currentIndex', (newValue, oldValue)->
-                            if newValue? and newValue isnt oldValue
+                        currentIndexWatch = $scope.$watch 'currentIndex', (newValue, oldValue)->
+                            if newValue?
                                 slider.slick 'slickGoTo', newValue
 
 
@@ -187,8 +191,4 @@ angular.module('angular-slick', [])
                             isInitialized = true
                 else
                     initializeSlick()
-
-                # On Destroy
-                $scope.$on '$destroy', ->
-                    destroySlick()
     ]
