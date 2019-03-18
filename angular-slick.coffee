@@ -1,3 +1,4 @@
+
 angular.module('angular-slick', [])
     .directive 'slick', [
         '$timeout'
@@ -24,7 +25,7 @@ angular.module('angular-slick', [])
                 cssEase: "@"
                 customPaging: "&"
                 dots: "@"
-                draggable: "@"
+                draggable: "="
                 fade: "@"
                 focusOnSelect: "@"
                 easing: "@"
@@ -60,6 +61,14 @@ angular.module('angular-slick', [])
                 onSwipe: '&'
 
             link: ($scope, elem, attrs)->
+                slider = null
+
+                $scope.$watch 'draggable', ->
+                    return if !slider
+                    return if !$scope.draggable?
+                        
+                    slider.slick('slickSetOption', 'draggable', $scope.draggable, false)
+
                 currentIndexWatch = ->
 
                 destroySlick = ->
@@ -97,7 +106,7 @@ angular.module('angular-slick', [])
                             cssEase: $scope.cssEase or 'ease'
                             customPaging: customPaging
                             dots: $scope.dots is 'true'
-                            draggable: $scope.draggable isnt 'false'
+                            draggable: if $scope.draggable? then $scope.draggable else true
                             fade: $scope.fade is 'true'
                             focusOnSelect: $scope.focusOnSelect is 'true'
                             easing: $scope.easing or 'linear'
