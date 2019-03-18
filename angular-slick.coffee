@@ -1,6 +1,4 @@
 
-_ = require('lodash')
-
 angular.module('angular-slick', [])
     .directive 'slick', [
         '$timeout'
@@ -67,7 +65,7 @@ angular.module('angular-slick', [])
 
                 $scope.$watch 'draggable', ->
                     return if !slider
-                    return if _.isUndefined(!$scope.draggable)
+                    return if !$scope.draggable?
                         
                     slider.slick('slickSetOption', 'draggable', $scope.draggable, false)
 
@@ -108,7 +106,7 @@ angular.module('angular-slick', [])
                             cssEase: $scope.cssEase or 'ease'
                             customPaging: customPaging
                             dots: $scope.dots is 'true'
-                            draggable: if _.isUndefined($scope.draggable) then true else $scope.draggable
+                            draggable: if $scope.draggable? then $scope.draggable else true
                             fade: $scope.fade is 'true'
                             focusOnSelect: $scope.focusOnSelect is 'true'
                             easing: $scope.easing or 'linear'
